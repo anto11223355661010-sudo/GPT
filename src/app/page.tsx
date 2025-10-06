@@ -10,6 +10,7 @@ import {
   googleProvider
 } from '@/lib/firebase/client';
 import { useAuth } from '@/components/auth-provider';
+import { Navbar } from '@/components/navbar';
 
 export default function HomePage() {
   const router = useRouter();
@@ -44,11 +45,16 @@ export default function HomePage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background px-6">
-      <div className="max-w-md w-full space-y-8 p-10 rounded-3xl bg-surface shadow-sm border border-slate-200">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-semibold text-text">UP Mind</h1>
-          <p className="text-slate-600">Réviser, apprendre et progresser grâce à l’IA, sans distraction.</p>
+    <>
+      <Navbar />
+      <main
+        id="connexion"
+        className="flex min-h-screen flex-col items-center justify-center bg-background px-6 pt-28"
+      >
+        <div className="w-full max-w-md space-y-8 rounded-3xl border border-slate-200 bg-surface p-10 shadow-sm">
+          <div className="space-y-2 text-center">
+            <h1 className="text-3xl font-semibold text-text">UP Mind</h1>
+            <p className="text-slate-600">Réviser, apprendre et progresser grâce à l’IA, sans distraction.</p>
         </div>
         <div className="space-y-4">
           <button
@@ -72,7 +78,8 @@ export default function HomePage() {
             </p>
           )}
         </div>
-      </div>
-    </main>
+        </div>
+      </main>
+    </>
   );
 }
