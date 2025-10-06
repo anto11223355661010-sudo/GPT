@@ -18,7 +18,7 @@ UP Mind est une application web minimaliste construite avec Next.js, Tailwind CS
 
 ## Configuration
 
-1. Dupliquez le fichier `.env.example` en `.env` et complétez les valeurs Firebase et IA.
+1. Dupliquez le fichier `.env.example` en `.env`. Les variables `NEXT_PUBLIC_FIREBASE_*` sont déjà préremplies avec la configuration Firebase du projet **UP Mind** ; adaptez-les uniquement si vous souhaitez pointer vers un autre projet et complétez les clés IA.
 2. Installez les dépendances :
    ```bash
    npm install

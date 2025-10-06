@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { createCourse } from '@/lib/firestore';
+import { createCourse, MissingFirebaseConfigError } from '@/lib/firestore';
+import { getFirebaseConfigErrorMessage, isFirebaseConfigured } from '@/lib/firebase/client';
 import { useAuth } from './auth-provider';
 
 interface CourseFormProps {
@@ -23,6 +24,14 @@ export function CourseForm({ onCreated }: CourseFormProps) {
       return;
     }
 
+    if (!isFirebaseConfigured) {
+      setError(
+        getFirebaseConfigErrorMessage() ??
+          "La configuration Firebase est manquante. Ajoutez les variables d'environnement requises."
+      );
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -38,8 +47,12 @@ export function CourseForm({ onCreated }: CourseFormProps) {
       setContent('');
       onCreated?.(courseId);
     } catch (err) {
-      setError('Erreur lors de la sauvegarde du cours.');
-      console.error(err);
+      if (err instanceof MissingFirebaseConfigError) {
+        setError(err.message);
+      } else {
+        setError('Erreur lors de la sauvegarde du cours.');
+        console.error(err);
+      }
     } finally {
       setLoading(false);
     }
@@ -67,9 +80,15 @@ export function CourseForm({ onCreated }: CourseFormProps) {
         />
       </div>
       {error && <p className="text-sm text-red-500">{error}</p>}
+      {!isFirebaseConfigured && !error && (
+        <p className="text-sm text-red-500">
+          {getFirebaseConfigErrorMessage() ??
+            "La configuration Firebase est manquante. Ajoutez les variables d'environnement requises."}
+        </p>
+      )}
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || !isFirebaseConfigured}
         className="rounded-xl bg-accent px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {loading ? 'Enregistrement...' : 'Sauvegarder le cours'}

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { firebaseAuth } from '@/lib/firebase/client';
+import { firebaseAuth, getFirebaseConfigErrorMessage } from '@/lib/firebase/client';
 
 interface AuthContextValue {
   user: User | null;
@@ -16,6 +16,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!firebaseAuth) {
+      console.error(getFirebaseConfigErrorMessage() ?? 'Firebase Auth is not configured.');
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(firebaseAuth, (firebaseUser) => {
       setUser(firebaseUser);
       setLoading(false);

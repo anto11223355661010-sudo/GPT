@@ -11,7 +11,7 @@ import {
   updateDoc,
   where
 } from 'firebase/firestore';
-import { firestore } from './firebase/client';
+import { firestore, getFirebaseConfigErrorMessage, isFirebaseConfigured } from './firebase/client';
 import type { Course } from '@/types/course';
 import type { Summary } from '@/types/summary';
 import type { Quiz } from '@/types/quiz';
@@ -20,8 +20,27 @@ import type { LeaderboardEntry } from '@/types/user';
 const toMillis = (timestamp: Timestamp | null | undefined) =>
   timestamp ? timestamp.toMillis() : Date.now();
 
+export class MissingFirebaseConfigError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'MissingFirebaseConfigError';
+  }
+}
+
+const getFirestoreOrThrow = () => {
+  if (!firestore || !isFirebaseConfigured) {
+    throw new MissingFirebaseConfigError(
+      getFirebaseConfigErrorMessage() ??
+        'Firestore est indisponible. Ajoutez les variables d\'environnement Firebase requises.'
+    );
+  }
+
+  return firestore;
+};
+
 export async function createCourse(data: Omit<Course, 'id' | 'createdAt' | 'updatedAt'>) {
-  const ref = await addDoc(collection(firestore, 'courses'), {
+  const db = getFirestoreOrThrow();
+  const ref = await addDoc(collection(db, 'courses'), {
     ...data,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp()
@@ -31,15 +50,17 @@ export async function createCourse(data: Omit<Course, 'id' | 'createdAt' | 'upda
 }
 
 export async function updateCourse(courseId: string, data: Partial<Course>) {
-  await updateDoc(doc(firestore, 'courses', courseId), {
+  const db = getFirestoreOrThrow();
+  await updateDoc(doc(db, 'courses', courseId), {
     ...data,
     updatedAt: serverTimestamp()
   });
 }
 
 export async function listCourses(userId: string): Promise<Course[]> {
+  const db = getFirestoreOrThrow();
   const snapshot = await getDocs(
-    query(collection(firestore, 'courses'), where('userId', '==', userId), orderBy('createdAt', 'desc'))
+    query(collection(db, 'courses'), where('userId', '==', userId), orderBy('createdAt', 'desc'))
   );
 
   return snapshot.docs.map((docSnap) => ({
@@ -51,7 +72,8 @@ export async function listCourses(userId: string): Promise<Course[]> {
 }
 
 export async function getCourse(courseId: string): Promise<Course | null> {
-  const docSnap = await getDoc(doc(firestore, 'courses', courseId));
+  const db = getFirestoreOrThrow();
+  const docSnap = await getDoc(doc(db, 'courses', courseId));
 
   if (!docSnap.exists()) return null;
 
@@ -65,7 +87,8 @@ export async function getCourse(courseId: string): Promise<Course | null> {
 }
 
 export async function createSummary(data: Omit<Summary, 'id' | 'createdAt'>) {
-  const ref = await addDoc(collection(firestore, 'summaries'), {
+  const db = getFirestoreOrThrow();
+  const ref = await addDoc(collection(db, 'summaries'), {
     ...data,
     createdAt: serverTimestamp()
   });
@@ -74,8 +97,9 @@ export async function createSummary(data: Omit<Summary, 'id' | 'createdAt'>) {
 }
 
 export async function listSummaries(userId: string): Promise<Summary[]> {
+  const db = getFirestoreOrThrow();
   const snapshot = await getDocs(
-    query(collection(firestore, 'summaries'), where('userId', '==', userId), orderBy('createdAt', 'desc'))
+    query(collection(db, 'summaries'), where('userId', '==', userId), orderBy('createdAt', 'desc'))
   );
 
   return snapshot.docs.map((docSnap) => ({
@@ -86,7 +110,8 @@ export async function listSummaries(userId: string): Promise<Summary[]> {
 }
 
 export async function createQuiz(data: Omit<Quiz, 'id' | 'createdAt'>) {
-  const ref = await addDoc(collection(firestore, 'quizzes'), {
+  const db = getFirestoreOrThrow();
+  const ref = await addDoc(collection(db, 'quizzes'), {
     ...data,
     createdAt: serverTimestamp()
   });
@@ -95,8 +120,9 @@ export async function createQuiz(data: Omit<Quiz, 'id' | 'createdAt'>) {
 }
 
 export async function listQuizzes(userId: string): Promise<Quiz[]> {
+  const db = getFirestoreOrThrow();
   const snapshot = await getDocs(
-    query(collection(firestore, 'quizzes'), where('userId', '==', userId), orderBy('createdAt', 'desc'))
+    query(collection(db, 'quizzes'), where('userId', '==', userId), orderBy('createdAt', 'desc'))
   );
 
   return snapshot.docs.map((docSnap) => ({
@@ -107,7 +133,8 @@ export async function listQuizzes(userId: string): Promise<Quiz[]> {
 }
 
 export async function listLeaderboardEntries(week: string): Promise<LeaderboardEntry[]> {
-  const snapshot = await getDocs(collection(firestore, 'leaderboard', week, 'entries'));
+  const db = getFirestoreOrThrow();
+  const snapshot = await getDocs(collection(db, 'leaderboard', week, 'entries'));
 
   return snapshot.docs
     .map((docSnap) => ({ id: docSnap.id, ...(docSnap.data() as LeaderboardEntry) }))
