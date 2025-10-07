@@ -1,6 +1,11 @@
+'use client';
+
 import Link from 'next/link';
+import { useAuth } from '@/components/auth-provider';
 
 export function Navbar() {
+  const { user, loading } = useAuth();
+
   return (
     <header className="sticky top-0 z-50 w-full px-6 pt-6">
       <div
@@ -21,18 +26,41 @@ export function Navbar() {
           </Link>
         </nav>
         <div className="flex items-center gap-3">
-          <Link
-            href="/connexion"
-            className="rounded-full px-4 py-2 text-sm font-semibold text-slate-900 transition hover:text-slate-600 dark:text-white dark:hover:text-slate-300"
-          >
-            S’inscrire
-          </Link>
-          <Link
-            href="/connexion"
-            className="rounded-full bg-slate-900/90 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_30px_-15px_rgba(15,23,42,0.9)] transition hover:bg-slate-900 dark:bg-white/90 dark:text-slate-900"
-          >
-            Se connecter
-          </Link>
+          {loading ? (
+            <span className="h-9 w-28 animate-pulse rounded-full bg-white/60 text-transparent dark:bg-slate-700/60">
+              Chargement
+            </span>
+          ) : user ? (
+            <>
+              <Link
+                href="/app"
+                className="rounded-full px-4 py-2 text-sm font-semibold text-slate-900 transition hover:text-slate-600 dark:text-white dark:hover:text-slate-300"
+              >
+                Mon profil
+              </Link>
+              <Link
+                href="/app/summaries"
+                className="rounded-full bg-slate-900/90 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_30px_-15px_rgba(15,23,42,0.9)] transition hover:bg-slate-900 dark:bg-white/90 dark:text-slate-900"
+              >
+                Mes fiches
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/connexion"
+                className="rounded-full px-4 py-2 text-sm font-semibold text-slate-900 transition hover:text-slate-600 dark:text-white dark:hover:text-slate-300"
+              >
+                S’inscrire
+              </Link>
+              <Link
+                href="/connexion"
+                className="rounded-full bg-slate-900/90 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_30px_-15px_rgba(15,23,42,0.9)] transition hover:bg-slate-900 dark:bg-white/90 dark:text-slate-900"
+              >
+                Se connecter
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

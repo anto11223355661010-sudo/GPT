@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-
 import { Navbar } from '@/components/navbar';
 import { getCurrentUser } from '@/lib/server-auth';
 
@@ -68,14 +66,7 @@ const TESTIMONIALS = [
 
 export default async function HomePage() {
   const skipAuth = cookies().get('skip_auth')?.value === '1';
-
-  if (!skipAuth) {
-    const user = await getCurrentUser();
-
-    if (user) {
-      redirect('/app');
-    }
-  }
+  const user = skipAuth ? null : await getCurrentUser();
 
   return (
     <>
@@ -90,20 +81,47 @@ export default async function HomePage() {
               </span>
               <div className="space-y-5">
                 <h1 className="text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl dark:text-white">
-                  Transformez vos révisions en un parcours motivant et personnalisé.
+                  {user ? `Ravi de vous revoir, ${user.displayName}.` :
+                    'Transformez vos révisions en un parcours motivant et personnalisé.'}
                 </h1>
                 <p className="max-w-xl text-lg text-slate-600 dark:text-slate-300">
-                  UP Mind combine IA et coaching pédagogique pour construire des routines efficaces, mesurer vos progrès et vous maintenir inspiré jusqu’à la réussite.
+                  {user
+                    ? 'Retrouvez vos cours, vos fiches et vos amis en un clin d’œil ou explorez nos nouveautés.'
+                    : 'UP Mind combine IA et coaching pédagogique pour construire des routines efficaces, mesurer vos progrès et vous maintenir inspiré jusqu’à la réussite.'}
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-4">
-                <Link
-                  href="/connexion"
-                  className="rounded-full bg-slate-900 px-6 py-3 text-base font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
-                >
-                  Commencer maintenant
-                </Link>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Créez votre accès et retrouvez vos cours en un instant.</p>
+                {user ? (
+                  <>
+                    <Link
+                      href="/app"
+                      className="rounded-full bg-slate-900 px-6 py-3 text-base font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+                    >
+                      Accéder à mon espace
+                    </Link>
+                    <Link
+                      href="/app/summaries"
+                      className="rounded-full border border-slate-300 px-6 py-3 text-base font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:border-slate-500 hover:text-slate-700 dark:border-slate-700 dark:text-white dark:hover:border-slate-500"
+                    >
+                      Ouvrir mes fiches
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/connexion"
+                      className="rounded-full bg-slate-900 px-6 py-3 text-base font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+                    >
+                      Commencer maintenant
+                    </Link>
+                    <Link
+                      href="/tarifs"
+                      className="rounded-full border border-slate-300 px-6 py-3 text-base font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:border-slate-500 hover:text-slate-700 dark:border-slate-700 dark:text-white dark:hover:border-slate-500"
+                    >
+                      Voir les forfaits
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
             <ul className="grid w-full max-w-sm gap-4 rounded-3xl border border-slate-200 bg-white/70 p-6 shadow-xl ring-1 ring-black/5 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/60">
@@ -159,6 +177,68 @@ export default async function HomePage() {
                   <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{feature.description}</p>
                 </article>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-slate-900 py-20 text-white dark:bg-slate-950/60">
+          <div className="mx-auto max-w-6xl space-y-10 px-6">
+            <div className="space-y-4 text-center">
+              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-white/70">Votre espace en un clic</p>
+              <h2 className="text-3xl font-semibold sm:text-4xl">Mes fiches, mes cours et mon abonnement réunis</h2>
+              <p className="mx-auto max-w-2xl text-base text-white/70">
+                Accédez rapidement à vos pages essentielles : retrouvez vos fiches synthétiques, gérez vos cours et adaptez votre forfait quand vous le souhaitez.
+              </p>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              <Link
+                href="/app"
+                className="group flex flex-col gap-3 rounded-3xl border border-white/20 bg-white/5 p-6 text-left transition hover:border-white/40 hover:bg-white/10"
+              >
+                <span className="text-sm font-semibold uppercase tracking-wide text-white/70">Mon profil</span>
+                <span className="text-2xl font-semibold text-white">Tableau de bord</span>
+                <p className="text-sm text-white/70">Retrouvez l’ensemble de vos activités et votre progression.</p>
+                <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white/80">
+                  Y aller
+                  <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+                </span>
+              </Link>
+              <Link
+                href="/app/courses"
+                className="group flex flex-col gap-3 rounded-3xl border border-white/20 bg-white/5 p-6 text-left transition hover:border-white/40 hover:bg-white/10"
+              >
+                <span className="text-sm font-semibold uppercase tracking-wide text-white/70">Organisation</span>
+                <span className="text-2xl font-semibold text-white">Mes cours</span>
+                <p className="text-sm text-white/70">Ajoutez de nouveaux supports et planifiez vos sessions IA.</p>
+                <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white/80">
+                  Gérer
+                  <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+                </span>
+              </Link>
+              <Link
+                href="/app/summaries"
+                className="group flex flex-col gap-3 rounded-3xl border border-white/20 bg-white/5 p-6 text-left transition hover:border-white/40 hover:bg-white/10"
+              >
+                <span className="text-sm font-semibold uppercase tracking-wide text-white/70">Révisions</span>
+                <span className="text-2xl font-semibold text-white">Mes fiches</span>
+                <p className="text-sm text-white/70">Retrouvez toutes vos synthèses générées et téléchargez-les.</p>
+                <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white/80">
+                  Réviser
+                  <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+                </span>
+              </Link>
+              <Link
+                href="/tarifs"
+                className="group flex flex-col gap-3 rounded-3xl border border-white/20 bg-white/5 p-6 text-left transition hover:border-white/40 hover:bg-white/10"
+              >
+                <span className="text-sm font-semibold uppercase tracking-wide text-white/70">Abonnement</span>
+                <span className="text-2xl font-semibold text-white">Changer de forfait</span>
+                <p className="text-sm text-white/70">Comparez nos offres et ajustez votre abonnement en quelques clics.</p>
+                <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white/80">
+                  Découvrir
+                  <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+                </span>
+              </Link>
             </div>
           </div>
         </section>
