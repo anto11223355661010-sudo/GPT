@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { requestQuiz } from '@/lib/ai';
-import { createQuiz } from '@/lib/firestore';
+import { createQuiz, MissingFirebaseConfigError } from '@/lib/firestore';
+import { getFirebaseConfigErrorMessage, isFirebaseConfigured } from '@/lib/firebase/client';
 import { useAuth } from './auth-provider';
 import type { QuizQuestion } from '@/types/quiz';
 
@@ -24,6 +25,14 @@ export function QuizGenerator() {
       return;
     }
 
+    if (!isFirebaseConfigured) {
+      setError(
+        getFirebaseConfigErrorMessage() ??
+          "La configuration Firebase est manquante. Ajoutez les variables d'environnement requises."
+      );
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -36,8 +45,12 @@ export function QuizGenerator() {
         questions: response.questions
       });
     } catch (err) {
-      console.error(err);
-      setError('Impossible de générer le QCM.');
+      if (err instanceof MissingFirebaseConfigError) {
+        setError(err.message);
+      } else {
+        console.error(err);
+        setError('Impossible de générer le QCM.');
+      }
     } finally {
       setLoading(false);
     }
@@ -55,12 +68,18 @@ export function QuizGenerator() {
         <button
           type="button"
           onClick={handleGenerate}
-          disabled={loading}
+          disabled={loading || !isFirebaseConfigured}
           className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? 'Génération en cours...' : 'Créer le QCM'}
         </button>
         {error && <p className="text-sm text-red-500">{error}</p>}
+        {!isFirebaseConfigured && !error && (
+          <p className="text-sm text-red-500">
+            {getFirebaseConfigErrorMessage() ??
+              "La configuration Firebase est manquante. Ajoutez les variables d'environnement requises."}
+          </p>
+        )}
       </div>
       {questions.length > 0 && (
         <div className="space-y-6">

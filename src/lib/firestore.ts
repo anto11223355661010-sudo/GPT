@@ -11,7 +11,7 @@ import {
   updateDoc,
   where
 } from 'firebase/firestore';
-import { firestore, getFirebaseConfigErrorMessage } from './firebase/client';
+import { firestore, getFirebaseConfigErrorMessage, isFirebaseConfigured } from './firebase/client';
 import type { Course } from '@/types/course';
 import type { Summary } from '@/types/summary';
 import type { Quiz } from '@/types/quiz';
@@ -20,11 +20,18 @@ import type { LeaderboardEntry } from '@/types/user';
 const toMillis = (timestamp: Timestamp | null | undefined) =>
   timestamp ? timestamp.toMillis() : Date.now();
 
+export class MissingFirebaseConfigError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'MissingFirebaseConfigError';
+  }
+}
+
 const getFirestoreOrThrow = () => {
-  if (!firestore) {
-    throw new Error(
+  if (!firestore || !isFirebaseConfigured) {
+    throw new MissingFirebaseConfigError(
       getFirebaseConfigErrorMessage() ??
-        'Firestore is not configured. Please ensure Firebase environment variables are set.'
+        'Firestore est indisponible. Ajoutez les variables d\'environnement Firebase requises.'
     );
   }
 

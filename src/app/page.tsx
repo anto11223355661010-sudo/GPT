@@ -1,4 +1,6 @@
-'use client';
+import Link from 'next/link';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 import { useEffect } from 'react';
 import { signInWithPopup } from 'firebase/auth';
@@ -13,36 +15,76 @@ import { useAuth } from '@/components/auth-provider';
 import { ScrollScene } from '@/components/scroll-scene';
 import { Navbar } from '@/components/navbar';
 
-export default function HomePage() {
-  const router = useRouter();
-  const { user, loading } = useAuth();
+const HERO_HIGHLIGHTS = [
+  'Plans de révision dynamiques qui s’adaptent à votre progression.',
+  'Suggestions d’exercices ciblées générées par l’IA.',
+  'Rappels intelligents pour garder le rythme sans stress.'
+];
 
-  useEffect(() => {
-    if (!loading && user) {
-      router.replace('/app');
+const FEATURE_CARDS = [
+  {
+    title: 'Agenda intelligent',
+    description:
+      'Générez des sessions personnalisées selon vos disponibilités et la priorité de chaque matière.'
+  },
+  {
+    title: 'Cartes mémo propulsées par l’IA',
+    description:
+      'Transformez vos notes en flashcards automatiquement et révisez grâce à la répétition espacée.'
+  },
+  {
+    title: 'Suivi de progression en temps réel',
+    description:
+      'Visualisez vos performances, repérez vos forces et ajustez vos objectifs sans perdre de temps.'
+  }
+];
+
+const ADVANTAGE_ITEMS = [
+  'Support multi-plateforme pour réviser où que vous soyez.',
+  'Notifications intelligentes pour ne jamais perdre le fil.',
+  'Méthodologie validée par des coachs pédagogiques et des étudiant·es.'
+];
+
+const ADVANTAGE_CARDS = [
+  {
+    title: 'Routine personnalisée',
+    description:
+      'Ajustez la charge de travail, les priorités et l’intensité des rappels selon vos objectifs.'
+  },
+  {
+    title: 'Communauté motivante',
+    description:
+      'Rejoignez un groupe d’étudiant·es qui partagent leurs stratégies et se soutiennent au quotidien.'
+  }
+];
+
+const TESTIMONIALS = [
+  {
+    quote:
+      '“UP Mind a transformé mes révisions. Le suivi est clair et les rappels m’aident à rester régulière.”',
+    author: 'Emma · Étudiante en droit'
+  },
+  {
+    quote:
+      '“Les cartes mémo générées automatiquement sont un gain de temps incroyable. Je révise beaucoup plus efficacement.”',
+    author: 'Lucas · Prépa scientifique'
+  },
+  {
+    quote:
+      '“Enfin une app qui comprend notre charge mentale. L’agenda intelligent m’évite de procrastiner.”',
+    author: 'Mina · Licence de psychologie'
+  }
+];
+
+export default async function HomePage() {
+  const skipAuth = cookies().get('skip_auth')?.value === '1';
+
+  if (!skipAuth) {
+    const user = await getCurrentUser();
+
+    if (user) {
+      redirect('/app');
     }
-  }, [user, loading, router]);
-
-  const handleGoogleSignIn = async () => {
-    if (!firebaseAuth) {
-      console.error(getFirebaseConfigErrorMessage() ?? 'Firebase Auth is not configured.');
-      return;
-    }
-
-    await signInWithPopup(firebaseAuth, googleProvider);
-  };
-
-  const handleAppleSignIn = async () => {
-    if (!firebaseAuth) {
-      console.error(getFirebaseConfigErrorMessage() ?? 'Firebase Auth is not configured.');
-      return;
-    }
-
-    await signInWithPopup(firebaseAuth, appleProvider);
-  };
-
-  if (user) {
-    return null;
   }
 
   return (

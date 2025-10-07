@@ -11,6 +11,12 @@ export async function getCurrentUser() {
 
   try {
     const app = getAdminApp();
+
+    if (!app) {
+      console.warn('Firebase Admin est indisponible. Impossible de vérifier le cookie de session.');
+      return null;
+    }
+
     const decodedToken = await getAuth(app).verifySessionCookie(sessionCookie, true);
     return {
       uid: decodedToken.uid,

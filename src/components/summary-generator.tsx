@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { requestSummary } from '@/lib/ai';
-import { createSummary } from '@/lib/firestore';
+import { createSummary, MissingFirebaseConfigError } from '@/lib/firestore';
+import { getFirebaseConfigErrorMessage, isFirebaseConfigured } from '@/lib/firebase/client';
 import { useAuth } from './auth-provider';
 import { SummaryTabs } from './summary-tabs';
 import type { SummaryVariant } from '@/types/summary';
@@ -25,6 +26,14 @@ export function SummaryGenerator({ courseContent }: { courseContent?: string }) 
       return;
     }
 
+    if (!isFirebaseConfigured) {
+      setError(
+        getFirebaseConfigErrorMessage() ??
+          "La configuration Firebase est manquante. Ajoutez les variables d'environnement requises."
+      );
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -37,8 +46,12 @@ export function SummaryGenerator({ courseContent }: { courseContent?: string }) 
         variants: response.variants
       });
     } catch (err) {
-      console.error(err);
-      setError("La génération n'a pas abouti. Réessayez dans un instant.");
+      if (err instanceof MissingFirebaseConfigError) {
+        setError(err.message);
+      } else {
+        console.error(err);
+        setError("La génération n'a pas abouti. Réessayez dans un instant.");
+      }
     } finally {
       setLoading(false);
     }
@@ -56,12 +69,18 @@ export function SummaryGenerator({ courseContent }: { courseContent?: string }) 
         <button
           type="button"
           onClick={handleGenerate}
-          disabled={loading}
+          disabled={loading || !isFirebaseConfigured}
           className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? 'Génération en cours...' : 'Générer le résumé'}
         </button>
         {error && <p className="text-sm text-red-500">{error}</p>}
+        {!isFirebaseConfigured && !error && (
+          <p className="text-sm text-red-500">
+            {getFirebaseConfigErrorMessage() ??
+              "La configuration Firebase est manquante. Ajoutez les variables d'environnement requises."}
+          </p>
+        )}
       </div>
       {variants.length > 0 && <SummaryTabs variants={variants} />}
     </div>

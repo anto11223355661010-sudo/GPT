@@ -4,11 +4,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const navItems = [
-  { label: 'Accueil', href: '/app' },
-  { label: 'Cours', href: '/app/courses' },
-  { label: 'Fiches', href: '/app/summaries' },
-  { label: 'Exercices', href: '/app/quizzes' },
-  { label: 'Amis', href: '/app/friends' },
+  { label: 'Tableau de bord', href: '/app' },
+  { label: 'Mes cours', href: '/app/courses' },
+  { label: 'Mes fiches', href: '/app/summaries' },
+  { label: 'Mes exercices', href: '/app/quizzes' },
+  { label: 'Mes amis', href: '/app/friends' },
+  { label: 'Mes groupes', href: '/app/groups' },
   { label: 'Classement', href: '/app/leaderboard' }
 ];
 
