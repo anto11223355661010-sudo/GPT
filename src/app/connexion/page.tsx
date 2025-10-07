@@ -6,8 +6,10 @@ import { useRouter } from 'next/navigation';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signInWithPopup
+  signInWithPopup,
+  signInWithRedirect
 } from 'firebase/auth';
+import type { AuthError } from 'firebase/auth';
 import { Navbar } from '@/components/navbar';
 import { useAuth } from '@/components/auth-provider';
 import {
@@ -66,6 +68,12 @@ export default function ConnexionPage() {
     }
   };
 
+  const isAuthError = (error: unknown): error is AuthError =>
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    typeof (error as { code?: unknown }).code === 'string';
+
   const handleGoogleAuth = async () => {
     if (!firebaseAuth) {
       setError(
@@ -82,6 +90,24 @@ export default function ConnexionPage() {
       await signInWithPopup(firebaseAuth, googleProvider);
       router.replace('/app');
     } catch (err) {
+      if (
+        firebaseAuth &&
+        isAuthError(err) &&
+        (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request')
+      ) {
+        try {
+          await signInWithRedirect(firebaseAuth, googleProvider);
+          return;
+        } catch (redirectError) {
+          const redirectMessage =
+            redirectError instanceof Error
+              ? redirectError.message
+              : 'Une erreur est survenue lors de la redirection Google.';
+          setError(redirectMessage);
+          return;
+        }
+      }
+
       const message = err instanceof Error ? err.message : 'Une erreur est survenue.';
       setError(message);
     } finally {
