@@ -1,11 +1,9 @@
-'use client';
-
 import Link from 'next/link';
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
-import { useAuth } from '@/components/auth-provider';
 import { Navbar } from '@/components/navbar';
+import { getCurrentUser } from '@/lib/server-auth';
 
 const HERO_HIGHLIGHTS = [
   'Plans de révision dynamiques qui s’adaptent à votre progression.',
@@ -68,29 +66,15 @@ const TESTIMONIALS = [
   }
 ];
 
-export default function HomePage() {
-  const router = useRouter();
-  const { user, loading } = useAuth();
+export default async function HomePage() {
+  const skipAuth = cookies().get('skip_auth')?.value === '1';
 
-  useEffect(() => {
-    if (!loading && user) {
-      router.replace('/app');
+  if (!skipAuth) {
+    const user = await getCurrentUser();
+
+    if (user) {
+      redirect('/app');
     }
-  }, [router, user, loading]);
-
-  if (loading) {
-    return (
-      <>
-        <Navbar />
-        <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-white via-white to-slate-100 px-6 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
-          <p className="text-sm text-slate-500 dark:text-slate-400">Chargement…</p>
-        </main>
-      </>
-    );
-  }
-
-  if (user) {
-    return null;
   }
 
   return (
