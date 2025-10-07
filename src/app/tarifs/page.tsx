@@ -41,6 +41,16 @@ export default function TarifsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 py-24 text-white">
       <div className="mx-auto flex max-w-5xl flex-col gap-16 px-6">
+        <div className="flex items-center justify-between text-sm text-white/70">
+          <Link className="inline-flex items-center gap-2 font-medium transition hover:text-white" href="/">
+            <span aria-hidden>←</span>
+            Retour à l’accueil
+          </Link>
+          <Link className="inline-flex items-center gap-2 font-medium transition hover:text-white" href="/connexion">
+            Accéder à la connexion
+            <span aria-hidden>→</span>
+          </Link>
+        </div>
         <div className="space-y-4 text-center">
           <p className="text-sm uppercase tracking-[0.35em] text-white/60">Tarifs</p>
           <h1 className="text-4xl font-semibold">Des plans adaptés à chaque niveau d&apos;engagement</h1>

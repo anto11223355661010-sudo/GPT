@@ -22,6 +22,10 @@ export default function ConnexionPage() {
 
   useEffect(() => {
     if (!loading && user) {
+      if (typeof window !== 'undefined') {
+        document.cookie = 'skip_auth=; path=/; max-age=0';
+      }
+
       router.replace('/app');
     }
   }, [user, loading, router]);
@@ -55,11 +59,37 @@ export default function ConnexionPage() {
   };
 
   const handleSkip = () => {
+    if (typeof window !== 'undefined') {
+      document.cookie = 'skip_auth=1; path=/; max-age=3600';
+    }
+
     router.push('/app');
   };
 
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-white via-white to-slate-100 px-6 py-24 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
+          <div className="rounded-3xl border border-slate-200 bg-white/80 px-8 py-6 text-sm font-medium text-slate-600 shadow-xl dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-200">
+            Chargement de votre espace sécurisé…
+          </div>
+        </main>
+      </>
+    );
+  }
+
   if (user) {
-    return null;
+    return (
+      <>
+        <Navbar />
+        <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-white via-white to-slate-100 px-6 py-24 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
+          <div className="rounded-3xl border border-slate-200 bg-white/80 px-8 py-6 text-sm font-medium text-slate-600 shadow-xl dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-200">
+            Redirection vers votre tableau de bord…
+          </div>
+        </main>
+      </>
+    );
   }
 
   return (
