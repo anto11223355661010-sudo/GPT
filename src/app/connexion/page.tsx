@@ -56,6 +56,8 @@ export default function ConnexionPage() {
       } else {
         await signInWithEmailAndPassword(firebaseAuth, email, password);
       }
+
+      router.replace('/app');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Une erreur est survenue.';
       setError(message);
@@ -78,6 +80,7 @@ export default function ConnexionPage() {
 
     try {
       await signInWithPopup(firebaseAuth, googleProvider);
+      router.replace('/app');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Une erreur est survenue.';
       setError(message);
