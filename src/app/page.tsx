@@ -1,14 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import { signInWithPopup } from 'firebase/auth';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import {
-  appleProvider,
-  firebaseAuth,
-  getFirebaseConfigErrorMessage,
-  googleProvider
-} from '@/lib/firebase/client';
 import { useAuth } from '@/components/auth-provider';
 import { Navbar } from '@/components/navbar';
 
@@ -21,24 +15,6 @@ export default function HomePage() {
       router.replace('/app');
     }
   }, [user, loading, router]);
-
-  const handleGoogleSignIn = async () => {
-    if (!firebaseAuth) {
-      console.error(getFirebaseConfigErrorMessage() ?? 'Firebase Auth is not configured.');
-      return;
-    }
-
-    await signInWithPopup(firebaseAuth, googleProvider);
-  };
-
-  const handleAppleSignIn = async () => {
-    if (!firebaseAuth) {
-      console.error(getFirebaseConfigErrorMessage() ?? 'Firebase Auth is not configured.');
-      return;
-    }
-
-    await signInWithPopup(firebaseAuth, appleProvider);
-  };
 
   if (user) {
     return null;
@@ -275,7 +251,72 @@ export default function HomePage() {
             )}
           </div>
         </div>
-      </main>
+      </section>
+
+      <section id="about" className="bg-white py-20 dark:bg-slate-950">
+        <div className="mx-auto grid max-w-5xl gap-10 px-6 md:grid-cols-[1fr_1.2fr] md:items-center">
+          <div className="space-y-4">
+            <h2 className="text-3xl font-semibold text-slate-900 dark:text-white">À propos de nous</h2>
+            <p className="text-base text-slate-600 dark:text-slate-300">
+              UP Mind est né de la rencontre entre des coachs pédagogiques et des ingénieur·es passionné·es par les sciences cognitives. Notre mission : rendre la réussite accessible à chacun·e en modernisant les méthodes d’apprentissage.
+            </p>
+            <p className="text-base text-slate-600 dark:text-slate-300">
+              Nous construisons une plateforme qui met l’humain au centre, en combinant le meilleur de l’IA, du design et de la psychologie positive.
+            </p>
+          </div>
+          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Notre équipe</h3>
+            <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
+              • Clara, coach pédagogique, accompagne les étudiant·es dans leur organisation.
+            </p>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+              • Malik, ingénieur IA, conçoit les algorithmes qui adaptent les révisions à votre rythme.
+            </p>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+              • Sofia, product designer, imagine des parcours fluides pour que chaque session reste agréable.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="avis" className="bg-slate-50 py-20 dark:bg-slate-900">
+        <div className="mx-auto flex max-w-5xl flex-col gap-10 px-6">
+          <div className="flex flex-col items-center text-center">
+            <div className="flex items-center gap-2 text-3xl font-semibold text-slate-900 dark:text-white">
+              4,8/5
+              <div className="flex items-center text-amber-400">
+                <span>★</span>
+                <span>★</span>
+                <span>★</span>
+                <span>★</span>
+                <span>☆</span>
+              </div>
+            </div>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Basé sur plus de 250 avis vérifiés.</p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            <blockquote className="flex h-full flex-col justify-between rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                “UP Mind a transformé mes révisions. Le suivi est clair et les rappels m’aident à rester régulière.”
+              </p>
+              <cite className="mt-4 text-xs font-medium text-slate-500 dark:text-slate-400">Emma · Étudiante en droit</cite>
+            </blockquote>
+            <blockquote className="flex h-full flex-col justify-between rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                “Les cartes mémo générées automatiquement sont un gain de temps incroyable. Je révise beaucoup plus efficacement.”
+              </p>
+              <cite className="mt-4 text-xs font-medium text-slate-500 dark:text-slate-400">Lucas · Prépa scientifique</cite>
+            </blockquote>
+            <blockquote className="flex h-full flex-col justify-between rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                “Enfin une app qui comprend notre charge mentale. L’agenda intelligent m’évite de procrastiner.”
+              </p>
+              <cite className="mt-4 text-xs font-medium text-slate-500 dark:text-slate-400">Mina · Licence de psychologie</cite>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
     </>
   );
 }

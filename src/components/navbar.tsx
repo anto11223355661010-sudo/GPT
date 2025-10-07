@@ -32,7 +32,7 @@ export function Navbar() {
             className="rounded-full bg-slate-900/90 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_30px_-15px_rgba(15,23,42,0.9)] transition hover:bg-slate-900 dark:bg-white/90 dark:text-slate-900"
           >
             Se connecter
-          </a>
+          </Link>
         </div>
       </div>
     </header>
