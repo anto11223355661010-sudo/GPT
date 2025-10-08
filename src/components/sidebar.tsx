@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 const navItems = [
   { label: 'Tableau de bord', href: '/app' },
   { label: 'Mes cours', href: '/app/courses' },
-  { label: 'Mes fiches', href: '/app/summaries' },
+  { label: 'Mes fiches', href: '/app/fiches' },
   { label: 'Mes exercices', href: '/app/quizzes' },
   { label: 'Mes amis', href: '/app/friends' },
   { label: 'Mes groupes', href: '/app/groups' },

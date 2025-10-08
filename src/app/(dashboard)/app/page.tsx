@@ -21,7 +21,7 @@ const quickLinks = [
   {
     label: 'Mes fiches',
     description: 'Retrouvez toutes vos synthèses générées.',
-    href: '/app/summaries'
+    href: '/app/fiches'
   }
 ];
 
@@ -97,7 +97,7 @@ export default async function DashboardPage() {
             </p>
           </div>
           <Link
-            href="/app/summaries"
+            href="/app/fiches"
             className="inline-flex items-center rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-text transition hover:border-accent"
           >
             Voir toutes les fiches
