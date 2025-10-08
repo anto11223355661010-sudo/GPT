@@ -67,7 +67,11 @@ const TESTIMONIALS = [
 
 export default async function HomePage() {
   const skipAuth = cookies().get('skip_auth')?.value === '1';
-  const user = skipAuth ? null : await getCurrentUser();
+  let user = null;
+
+  if (!skipAuth) {
+    user = await getCurrentUser();
+  }
 
   return (
     <>
@@ -220,8 +224,9 @@ export default async function HomePage() {
                   Gérer
                   <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
                 </span>
-              </Link>
-              <Link
+              </ScrollReveal>
+              <ScrollReveal
+                as={Link}
                 href="/app/fiches"
                 className="group flex flex-col gap-3 rounded-3xl border border-white/20 bg-white/5 p-6 text-left transition hover:border-white/40 hover:bg-white/10"
               >
