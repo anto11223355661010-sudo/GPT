@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { Navbar } from '@/components/navbar';
+import { ScrollReveal } from '@/components/scroll-reveal';
 import { getCurrentUser } from '@/lib/server-auth';
 
 const HERO_HIGHLIGHTS = [
@@ -137,7 +138,7 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="relative overflow-hidden bg-slate-900 py-16 text-white">
+        <ScrollReveal as="section" className="relative overflow-hidden bg-slate-900 py-16 text-white">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.18),rgba(15,23,42,0.6))] opacity-70" />
           <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-6 text-center">
             <span className="rounded-full border border-white/30 px-4 py-1 text-xs uppercase tracking-[0.35em] text-white/80">
@@ -157,9 +158,9 @@ export default async function HomePage() {
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </a>
           </div>
-        </section>
+        </ScrollReveal>
 
-        <section id="features" className="bg-white py-20 dark:bg-slate-950">
+        <ScrollReveal id="features" as="section" className="bg-white py-20 dark:bg-slate-950">
           <div className="mx-auto grid max-w-6xl gap-12 px-6 md:grid-cols-2">
             <div className="space-y-4">
               <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">Fonctionnalités clés</h2>
@@ -168,20 +169,22 @@ export default async function HomePage() {
               </p>
             </div>
             <div className="grid gap-6">
-              {FEATURE_CARDS.map((feature) => (
-                <article
+              {FEATURE_CARDS.map((feature, index) => (
+                <ScrollReveal
+                  as="article"
                   key={feature.title}
+                  delay={index * 120}
                   className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
                 >
                   <h3 className="text-xl font-semibold text-slate-900 dark:text-white">{feature.title}</h3>
                   <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{feature.description}</p>
-                </article>
+                </ScrollReveal>
               ))}
             </div>
           </div>
-        </section>
+        </ScrollReveal>
 
-        <section className="bg-slate-900 py-20 text-white dark:bg-slate-950/60">
+        <ScrollReveal as="section" className="bg-slate-900 py-20 text-white dark:bg-slate-950/60">
           <div className="mx-auto max-w-6xl space-y-10 px-6">
             <div className="space-y-4 text-center">
               <p className="text-sm font-semibold uppercase tracking-[0.35em] text-white/70">Votre espace en un clic</p>
@@ -191,7 +194,8 @@ export default async function HomePage() {
               </p>
             </div>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-              <Link
+              <ScrollReveal
+                as={Link}
                 href="/app"
                 className="group flex flex-col gap-3 rounded-3xl border border-white/20 bg-white/5 p-6 text-left transition hover:border-white/40 hover:bg-white/10"
               >
@@ -202,9 +206,11 @@ export default async function HomePage() {
                   Y aller
                   <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
                 </span>
-              </Link>
-              <Link
+              </ScrollReveal>
+              <ScrollReveal
+                as={Link}
                 href="/app/courses"
+                delay={120}
                 className="group flex flex-col gap-3 rounded-3xl border border-white/20 bg-white/5 p-6 text-left transition hover:border-white/40 hover:bg-white/10"
               >
                 <span className="text-sm font-semibold uppercase tracking-wide text-white/70">Organisation</span>
@@ -226,9 +232,11 @@ export default async function HomePage() {
                   Réviser
                   <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
                 </span>
-              </Link>
-              <Link
+              </ScrollReveal>
+              <ScrollReveal
+                as={Link}
                 href="/tarifs"
+                delay={360}
                 className="group flex flex-col gap-3 rounded-3xl border border-white/20 bg-white/5 p-6 text-left transition hover:border-white/40 hover:bg-white/10"
               >
                 <span className="text-sm font-semibold uppercase tracking-wide text-white/70">Abonnement</span>
@@ -238,12 +246,12 @@ export default async function HomePage() {
                   Découvrir
                   <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
                 </span>
-              </Link>
+              </ScrollReveal>
             </div>
           </div>
-        </section>
+        </ScrollReveal>
 
-        <section id="avantages" className="bg-slate-50 py-20 dark:bg-slate-900">
+        <ScrollReveal id="avantages" as="section" className="bg-slate-50 py-20 dark:bg-slate-900">
           <div className="mx-auto max-w-6xl px-6">
             <div className="grid gap-12 md:grid-cols-[1.1fr_1fr]">
               <div className="space-y-6">
@@ -261,21 +269,22 @@ export default async function HomePage() {
                 </ul>
               </div>
               <div className="grid gap-6">
-                {ADVANTAGE_CARDS.map((card) => (
-                  <div
+                {ADVANTAGE_CARDS.map((card, index) => (
+                  <ScrollReveal
                     key={card.title}
+                    delay={index * 160}
                     className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950"
                   >
                     <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{card.title}</h3>
                     <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{card.description}</p>
-                  </div>
+                  </ScrollReveal>
                 ))}
               </div>
             </div>
           </div>
-        </section>
+        </ScrollReveal>
 
-        <section id="about" className="bg-white py-20 dark:bg-slate-950">
+        <ScrollReveal id="about" as="section" className="bg-white py-20 dark:bg-slate-950">
           <div className="mx-auto grid max-w-5xl gap-10 px-6 md:grid-cols-[1fr_1.2fr] md:items-center">
             <div className="space-y-4">
               <h2 className="text-3xl font-semibold text-slate-900 dark:text-white">À propos de nous</h2>
@@ -295,9 +304,9 @@ export default async function HomePage() {
               </ul>
             </div>
           </div>
-        </section>
+        </ScrollReveal>
 
-        <section id="avis" className="bg-slate-50 py-20 dark:bg-slate-900">
+        <ScrollReveal id="avis" as="section" className="bg-slate-50 py-20 dark:bg-slate-900">
           <div className="mx-auto flex max-w-5xl flex-col gap-10 px-6">
             <div className="flex flex-col items-center text-center">
               <div className="flex items-center gap-2 text-3xl font-semibold text-slate-900 dark:text-white">
@@ -313,18 +322,20 @@ export default async function HomePage() {
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Basé sur plus de 250 avis vérifiés.</p>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
-              {TESTIMONIALS.map((testimonial) => (
-                <blockquote
+              {TESTIMONIALS.map((testimonial, index) => (
+                <ScrollReveal
+                  as="blockquote"
                   key={testimonial.author}
+                  delay={index * 160}
                   className="flex h-full flex-col justify-between rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950"
                 >
                   <p className="text-sm text-slate-600 dark:text-slate-300">{testimonial.quote}</p>
                   <cite className="mt-4 text-xs font-medium text-slate-500 dark:text-slate-400">{testimonial.author}</cite>
-                </blockquote>
+                </ScrollReveal>
               ))}
             </div>
           </div>
-        </section>
+        </ScrollReveal>
       </main>
     </>
   );
