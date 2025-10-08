@@ -8,10 +8,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#F9FAFB',
-        surface: '#FFFFFF',
-        accent: '#7C3AED',
-        text: '#1E293B'
+        background: 'var(--color-background)',
+        surface: 'var(--color-surface)',
+        accent: 'var(--color-accent)',
+        text: 'var(--color-text)'
       }
     }
   },
