@@ -2,11 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Logo } from './logo';
 
 const navItems = [
   { label: 'Tableau de bord', href: '/app' },
   { label: 'Mes cours', href: '/app/courses' },
   { label: 'Mes fiches', href: '/app/fiches' },
+  { label: 'Fiches IA', href: '/app/summaries' },
   { label: 'Mes exercices', href: '/app/quizzes' },
   { label: 'Mes amis', href: '/app/friends' },
   { label: 'Mes groupes', href: '/app/groups' },
@@ -19,7 +21,7 @@ export function Sidebar({ user }: { user: { displayName: string } }) {
   return (
     <aside className="hidden md:flex w-72 flex-col border-r border-slate-200 bg-surface p-6">
       <div className="mb-10 space-y-1">
-        <h2 className="text-2xl font-semibold text-text">UP Mind</h2>
+        <Logo className="text-2xl" />
         <p className="text-sm text-slate-500">Bienvenue, {user.displayName}</p>
       </div>
       <nav className="space-y-2">

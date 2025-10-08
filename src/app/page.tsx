@@ -65,6 +65,24 @@ const TESTIMONIALS = [
   }
 ];
 
+const SUMMARY_STEPS = [
+  {
+    title: '1. Connectez votre API',
+    description:
+      'Ajoutez vos clés IA dans les variables IA_API_KEY et IA_API_BASE_URL pour relier UP Mind à ChatGPT.'
+  },
+  {
+    title: '2. Collez votre cours',
+    description:
+      'Rendez-vous sur la page Fiches IA, déposez votre contenu et lancez la génération automatique.'
+  },
+  {
+    title: '3. Exploitez les fiches',
+    description:
+      'Choisissez le niveau de détail adapté à votre temps de révision et partagez-les à votre équipe.'
+  }
+];
+
 export default async function HomePage() {
   const skipAuth = cookies().get('skip_auth')?.value === '1';
   let user = null;
@@ -110,6 +128,12 @@ export default async function HomePage() {
                     >
                       Ouvrir mes fiches
                     </Link>
+                    <Link
+                      href="/app/summaries"
+                      className="rounded-full border border-violet-400/60 px-6 py-3 text-base font-semibold text-violet-600 transition hover:-translate-y-0.5 hover:border-violet-500 hover:text-violet-700 dark:border-violet-500/60 dark:text-violet-300 dark:hover:border-violet-400 dark:hover:text-violet-200"
+                    >
+                      Générateur IA
+                    </Link>
                   </>
                 ) : (
                   <>
@@ -124,6 +148,12 @@ export default async function HomePage() {
                       className="rounded-full border border-slate-300 px-6 py-3 text-base font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:border-slate-500 hover:text-slate-700 dark:border-slate-700 dark:text-white dark:hover:border-slate-500"
                     >
                       Voir les forfaits
+                    </Link>
+                    <Link
+                      href="/connexion"
+                      className="rounded-full border border-violet-400/60 px-6 py-3 text-base font-semibold text-violet-600 transition hover:-translate-y-0.5 hover:border-violet-500 hover:text-violet-700 dark:border-violet-500/60 dark:text-violet-300 dark:hover:border-violet-400 dark:hover:text-violet-200"
+                    >
+                      Tester le générateur IA
                     </Link>
                   </>
                 )}
@@ -252,6 +282,52 @@ export default async function HomePage() {
                   <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
                 </span>
               </ScrollReveal>
+            </div>
+          </div>
+        </ScrollReveal>
+
+        <ScrollReveal
+          as="section"
+          className="relative overflow-hidden bg-gradient-to-br from-violet-50 via-white to-slate-100 py-20 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900"
+        >
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,rgba(139,92,246,0.18),transparent_55%),radial-gradient(circle_at_bottom_right,rgba(236,72,153,0.18),transparent_55%)]" />
+          <div className="mx-auto grid max-w-6xl gap-12 px-6 md:grid-cols-[1.2fr_1fr] md:items-center">
+            <div className="space-y-6">
+              <span className="text-xs font-semibold uppercase tracking-[0.35em] text-violet-500">Connexion IA</span>
+              <h2 className="text-3xl font-semibold text-slate-900 dark:text-white">
+                Connectez UP Mind à l’API ChatGPT en trois étapes
+              </h2>
+              <p className="text-base text-slate-600 dark:text-slate-300">
+                Configurez votre accès, déposez votre cours et obtenez automatiquement trois fiches de révision adaptées à votre temps disponible.
+              </p>
+              <ul className="space-y-5">
+                {SUMMARY_STEPS.map((step) => (
+                  <li key={step.title} className="rounded-3xl border border-violet-100 bg-white/70 p-5 shadow-sm dark:border-violet-900/60 dark:bg-slate-900/60">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white">{step.title}</p>
+                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{step.description}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="space-y-6 rounded-3xl border border-violet-100 bg-white/80 p-8 shadow-lg shadow-violet-500/10 dark:border-violet-900/50 dark:bg-slate-950/70">
+              <h3 className="text-xl font-semibold text-slate-900 dark:text-white">Configuration rapide</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                Ajoutez ces variables à votre fichier d’environnement pour activer le générateur de fiches propulsé par ChatGPT :
+              </p>
+              <pre className="rounded-2xl bg-slate-900/90 p-4 text-xs text-violet-100">
+                {`IA_API_KEY="votre_cle_openai"
+IA_API_BASE_URL="https://api.openai.com/v1/your-endpoint"`}
+              </pre>
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                Une fois l’accès configuré, collez votre cours dans le générateur et laissez l’IA produire vos trois niveaux de fiches.
+              </p>
+              <Link
+                href={user ? '/app/summaries' : '/connexion'}
+                className="inline-flex items-center justify-center rounded-full bg-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-violet-500"
+              >
+                Accéder au générateur IA
+                <span aria-hidden className="ml-2">→</span>
+              </Link>
             </div>
           </div>
         </ScrollReveal>

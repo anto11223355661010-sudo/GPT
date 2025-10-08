@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/components/auth-provider';
+import { Footer } from '@/components/footer';
 
 export const metadata: Metadata = {
   title: 'UP Mind',
@@ -15,7 +16,12 @@ export default function RootLayout({
   return (
     <html lang="fr" className="bg-background">
       <body className="font-sans antialiased">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <div className="flex min-h-screen flex-col">
+            <div className="flex-1">{children}</div>
+            <Footer />
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );
