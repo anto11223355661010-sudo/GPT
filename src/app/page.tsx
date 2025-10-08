@@ -101,7 +101,7 @@ export default async function HomePage() {
                       Accéder à mon espace
                     </Link>
                     <Link
-                      href="/app/summaries"
+                      href="/app/fiches"
                       className="rounded-full border border-slate-300 px-6 py-3 text-base font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:border-slate-500 hover:text-slate-700 dark:border-slate-700 dark:text-white dark:hover:border-slate-500"
                     >
                       Ouvrir mes fiches
@@ -220,11 +220,9 @@ export default async function HomePage() {
                   Gérer
                   <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
                 </span>
-              </ScrollReveal>
-              <ScrollReveal
-                as={Link}
-                href="/app/summaries"
-                delay={240}
+              </Link>
+              <Link
+                href="/app/fiches"
                 className="group flex flex-col gap-3 rounded-3xl border border-white/20 bg-white/5 p-6 text-left transition hover:border-white/40 hover:bg-white/10"
               >
                 <span className="text-sm font-semibold uppercase tracking-wide text-white/70">Révisions</span>

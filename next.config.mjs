@@ -6,6 +6,15 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     appDir: true
+  },
+  async redirects() {
+    return [
+      {
+        source: '/app/summaries',
+        destination: '/app/fiches',
+        permanent: true
+      }
+    ];
   }
 };
 
