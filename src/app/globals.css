@@ -2,12 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  min-height: 100%;
+  background-color: var(--color-background);
+}
+
 :root {
-  color-scheme: light;
+  color-scheme: light dark;
+  --color-background: #f9fafb;
+  --color-surface: #ffffff;
+  --color-accent: #7c3aed;
+  --color-text: #1e293b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --color-background: #020617;
+    --color-surface: #0f172a;
+    --color-text: #e2e8f0;
+  }
 }
 
 body {
-  @apply bg-background text-text antialiased;
+  @apply antialiased;
+  background-color: var(--color-background);
+  color: var(--color-text);
 }
 
 button {
