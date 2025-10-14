@@ -150,7 +150,7 @@ export default async function HomePage() {
                       Voir les forfaits
                     </Link>
                     <Link
-                      href="/connexion"
+                      href="/fiche"
                       className="rounded-full border border-violet-400/60 px-6 py-3 text-base font-semibold text-violet-600 transition hover:-translate-y-0.5 hover:border-violet-500 hover:text-violet-700 dark:border-violet-500/60 dark:text-violet-300 dark:hover:border-violet-400 dark:hover:text-violet-200"
                     >
                       Tester le générateur IA
