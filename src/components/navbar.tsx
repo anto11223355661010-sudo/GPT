@@ -1,11 +1,57 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { signOut } from 'firebase/auth';
 import { useAuth } from '@/components/auth-provider';
+import { firebaseAuth, getFirebaseConfigErrorMessage } from '@/lib/firebase/client';
 import { Logo } from './logo';
 
 export function Navbar() {
   const { user, loading } = useAuth();
+  const router = useRouter();
+  const [signingOut, setSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
+
+  const handleSignOut = async () => {
+    if (signingOut) {
+      return;
+    }
+
+    setSignOutError(null);
+    setSigningOut(true);
+
+    try {
+      if (!firebaseAuth) {
+        throw new Error(
+          getFirebaseConfigErrorMessage() ??
+            "La configuration Firebase est manquante. Ajoutez les variables d'environnement requises."
+        );
+      }
+
+      await signOut(firebaseAuth);
+
+      try {
+        await fetch('/api/auth/session', { method: 'DELETE' });
+      } catch (sessionError) {
+        console.error('Impossible de supprimer la session serveur', sessionError);
+      }
+
+      if (typeof document !== 'undefined') {
+        document.cookie = 'skip_auth=; path=/; max-age=0';
+      }
+
+      router.push('/connexion');
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'Une erreur est survenue lors de la déconnexion.';
+      setSignOutError(message);
+      setSigningOut(false);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full px-6 pt-6">
@@ -26,42 +72,57 @@ export function Navbar() {
             Tarifs
           </Link>
         </nav>
-        <div className="flex items-center gap-3">
-          {loading ? (
-            <span className="h-9 w-28 animate-pulse rounded-full bg-white/60 text-transparent dark:bg-slate-700/60">
-              Chargement
-            </span>
-          ) : user ? (
-            <>
-              <Link
-                href="/app"
-                className="rounded-full px-4 py-2 text-sm font-semibold text-slate-900 transition hover:text-slate-600 dark:text-white dark:hover:text-slate-300"
-              >
-                Mon profil
-              </Link>
-              <Link
-                href="/app/fiches"
-                className="rounded-full bg-slate-900/90 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_30px_-15px_rgba(15,23,42,0.9)] transition hover:bg-slate-900 dark:bg-white/90 dark:text-slate-900"
-              >
-                Mes fiches
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/connexion"
-                className="rounded-full px-4 py-2 text-sm font-semibold text-slate-900 transition hover:text-slate-600 dark:text-white dark:hover:text-slate-300"
-              >
-                S’inscrire
-              </Link>
-              <Link
-                href="/connexion"
-                className="rounded-full bg-slate-900/90 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_30px_-15px_rgba(15,23,42,0.9)] transition hover:bg-slate-900 dark:bg-white/90 dark:text-slate-900"
-              >
-                Se connecter
-              </Link>
-            </>
-          )}
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex items-center gap-3">
+            {loading ? (
+              <span className="h-9 w-28 animate-pulse rounded-full bg-white/60 text-transparent dark:bg-slate-700/60">
+                Chargement
+              </span>
+            ) : user ? (
+              <>
+                <Link
+                  href="/app"
+                  className="rounded-full px-4 py-2 text-sm font-semibold text-slate-900 transition hover:text-slate-600 dark:text-white dark:hover:text-slate-300"
+                >
+                  Tableau de bord
+                </Link>
+                <Link
+                  href="/app/fiches"
+                  className="rounded-full bg-slate-900/90 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_30px_-15px_rgba(15,23,42,0.9)] transition hover:bg-slate-900 dark:bg-white/90 dark:text-slate-900"
+                >
+                  Mes fiches
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  disabled={signingOut}
+                  className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:border-slate-500 hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-70 dark:border-slate-700 dark:text-white dark:hover:border-slate-500 dark:hover:text-slate-300"
+                >
+                  {signingOut ? 'Déconnexion…' : 'Se déconnecter'}
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/connexion"
+                  className="rounded-full px-4 py-2 text-sm font-semibold text-slate-900 transition hover:text-slate-600 dark:text-white dark:hover:text-slate-300"
+                >
+                  S’inscrire
+                </Link>
+                <Link
+                  href="/connexion"
+                  className="rounded-full bg-slate-900/90 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_30px_-15px_rgba(15,23,42,0.9)] transition hover:bg-slate-900 dark:bg-white/90 dark:text-slate-900"
+                >
+                  Se connecter
+                </Link>
+              </>
+            )}
+          </div>
+          {signOutError ? (
+            <p className="text-xs font-medium text-rose-600 dark:text-rose-400" role="status">
+              {signOutError}
+            </p>
+          ) : null}
         </div>
       </div>
     </header>

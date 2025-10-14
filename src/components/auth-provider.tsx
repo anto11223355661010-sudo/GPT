@@ -22,12 +22,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const unsubscribe = onAuthStateChanged(firebaseAuth, (firebaseUser) => {
+    let active = true;
+
+    const synchronizeSession = async (firebaseUser: User | null) => {
+      try {
+        if (firebaseUser) {
+          const idToken = await firebaseUser.getIdToken();
+          await fetch('/api/auth/session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken })
+          });
+        } else {
+          await fetch('/api/auth/session', { method: 'DELETE' });
+        }
+      } catch (error) {
+        console.error('Impossible de synchroniser la session serveur', error);
+      }
+    };
+
+    const unsubscribe = onAuthStateChanged(firebaseAuth, async (firebaseUser) => {
+      if (!active) {
+        return;
+      }
+
       setUser(firebaseUser);
-      setLoading(false);
+
+      try {
+        await synchronizeSession(firebaseUser);
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
     });
 
-    return () => unsubscribe();
+    return () => {
+      active = false;
+      unsubscribe();
+    };
   }, []);
 
   return <AuthContext.Provider value={{ user, loading }}>{children}</AuthContext.Provider>;

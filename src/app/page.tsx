@@ -233,8 +233,8 @@ export default async function HomePage() {
                 href="/app"
                 className="group flex flex-col gap-3 rounded-3xl border border-white/20 bg-white/5 p-6 text-left transition hover:border-white/40 hover:bg-white/10"
               >
-                <span className="text-sm font-semibold uppercase tracking-wide text-white/70">Mon profil</span>
-                <span className="text-2xl font-semibold text-white">Tableau de bord</span>
+                <span className="text-sm font-semibold uppercase tracking-wide text-white/70">Tableau de bord</span>
+                <span className="text-2xl font-semibold text-white">Mon espace</span>
                 <p className="text-sm text-white/70">Retrouvez l’ensemble de vos activités et votre progression.</p>
                 <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white/80">
                   Y aller
