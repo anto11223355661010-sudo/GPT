@@ -32,6 +32,12 @@ export function Navbar() {
 
       await signOut(firebaseAuth);
 
+      try {
+        await fetch('/api/auth/session', { method: 'DELETE' });
+      } catch (sessionError) {
+        console.error('Impossible de supprimer la session serveur', sessionError);
+      }
+
       if (typeof document !== 'undefined') {
         document.cookie = 'skip_auth=; path=/; max-age=0';
       }
